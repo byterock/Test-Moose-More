@@ -356,24 +356,24 @@ sub validate_thing {
         }
     }
     if ($args{no_extra_attributes}) {
-		local $THING_NAME = "${thing}";
-		my @from_meta = $thing->meta->get_attribute_list();
-		
-		if (scalar(@from_meta) == scalar((@{Data::OptList::mkopt($args{attributes} || [])}))){
-			ok(1==1, "$THING_NAME has no extra attributes");
-		}
-		else {
-			my @new_from_attr= (@{Data::OptList::mkopt($args{attributes} || [])});
-			my %new_from_attr = map {$_->[0]=>1} @new_from_attr;
-			for my $attribute (@from_meta){
-				unless(exists($new_from_attr{$attribute})){
-					 $tb->subtest("[subtest] checking $THING_NAME" => sub {
+	local $THING_NAME = "${thing}";
+	my @from_meta = $thing->meta->get_attribute_list();
+	my @new_from_attr= (@{Data::OptList::mkopt($args{attributes} || [])});
+	if (scalar(@from_meta) == scalar(@new_from_attr)){
+		ok(1==1, "$THING_NAME has no extra attributes");
+	}
+	else {
+			
+		my %new_from_attr = map {$_->[0]=>1} @new_from_attr;
+		for my $attribute (@from_meta){
+			unless(exists($new_from_attr{$attribute})){
+				 $tb->subtest("[subtest] checking $THING_NAME" => sub {
 					ok(1==0, "$THING_NAME has extra attribute $attribute");
-					});
-				}
+				});
 			}
 		}
-	}
+     	}
+    }
     return;
 }
 
